@@ -4,9 +4,6 @@ Aluna: Sabrina Mayume Silva Uezu
 
 Curso: Ciências da Computação – 3° Semestre
 
-Campus: São Paulo, Liberdade
-
-RA:72.125.022-3
 
 Tecnologias utilizadas: 
 
