@@ -39,4 +39,5 @@ O projeto foi desenvolvido individualmente, tendo como objetivo apresentar uma p
 
 DIAGRAMA DE CLASSES:
 
-<img width="886" height="485" alt="image" src="https://github.com/user-attachments/assets/7777c81d-239e-40b8-8719-7689fd83efd1" />
+<img width="1028" height="626" alt="WhatsApp Image 2026-05-09 at 19 12 31" src="https://github.com/user-attachments/assets/ef459cf7-ef8b-45e4-9f2c-5bdb4f3bcd41" />
+
