@@ -14,6 +14,7 @@ import br.edu.fei.view.JFrameLogin;
 public class Feiflix {
 
     public static void main(String[] args) {
+        System.out.println("Abrindo programa...");
         JFrameLogin login = new JFrameLogin();
         login.setLocationRelativeTo(null);
         login.setVisible(true);

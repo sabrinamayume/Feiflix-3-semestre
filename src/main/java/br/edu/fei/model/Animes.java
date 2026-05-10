@@ -8,25 +8,36 @@ package br.edu.fei.model;
  *
  * @author sabri
  */
-public class Anime {
-    private int id;
+public class Animes {
+    private int idAnimes;
     private String titulo;
     private String descricao;
     private int duracao;
     private String genero;
 
+    public Animes() {
+    }
+
+    public Animes(int idAnime, String titulo, String descricao, int duracao, String genero) {
+        this.idAnimes = idAnime;
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.duracao = duracao;
+        this.genero = genero;
+    }
+    
     /**
      * @return the id
      */
-    public int getId() {
-        return id;
+    public int getIdAnimes() {
+        return idAnimes;
     }
 
     /**
-     * @param id the id to set
+     * @param idAnimes the id to set
      */
-    public void setId(int id) {
-        this.id = id;
+    public void setIdAnimes(int idAnimes) {
+        this.idAnimes = idAnimes;
     }
 
     /**

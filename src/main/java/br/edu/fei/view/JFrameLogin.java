@@ -137,14 +137,14 @@ public class JFrameLogin extends javax.swing.JFrame {
         }
 
         UsuariosDAO dao = new UsuariosDAO();
-
         Usuarios usuarioLogado = dao.login(email, senha);
 
         if (usuarioLogado != null) {
             JOptionPane.showMessageDialog(this, "Bem-vindo(a), " + usuarioLogado.getNome());
 
-            // Depois vamos trocar isso para JFrameMenu
-            // new JFrameMenu(usuarioLogado).setVisible(true);
+            JFrameMenu menu = new JFrameMenu(usuarioLogado);
+            menu.setLocationRelativeTo(null);
+            menu.setVisible(true);
 
             this.dispose();
 
