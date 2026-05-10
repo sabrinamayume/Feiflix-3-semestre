@@ -8,25 +8,53 @@ package br.edu.fei.model;
  *
  * @author sabri
  */
-public class Usuario {
-    private int id;
+public class Usuarios {
+    private int idUsuario;
     private String nome;
     private String email;
     private String senha;
-    private int idade;
-
+    private String sexo;
+ 
     /**
-     * @return the id
+     * construtor
+    */
+    public Usuarios() {
+    }
+    
+    /**
+     * usado antes de salvar no banco
+    */
+    public Usuarios(String nome, String email, String senha, String sexo) {
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.sexo = sexo;
+    }
+    
+    /**
+     * usado depois de buscar no banco
+    */
+    public Usuarios(int idUsuario, String nome, String email, String senha, String sexo) {
+        this.idUsuario = idUsuario;
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.sexo = sexo;
+    }
+    
+    
+    /**
+     * @return the idUsuario
      */
-    public int getId() {
-        return id;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
     /**
-     * @param id the id to set
+     * @param idUsuario the id to set
      */
-    public void setId(int id) {
-        this.id = id;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     /**
@@ -72,17 +100,17 @@ public class Usuario {
     }
 
     /**
-     * @return the idade
+     * @return the sexo
      */
-    public int getIdade() {
-        return idade;
+    public String getSexo() {
+        return sexo;
     }
 
     /**
-     * @param idade the idade to set
+     * @param sexo the sexo to set
      */
-    public void setIdade(int idade) {
-        this.idade = idade;
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
     
 }

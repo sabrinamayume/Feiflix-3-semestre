@@ -10,4 +10,17 @@
         <maven.compiler.release>17</maven.compiler.release>
         <exec.mainClass>br.edu.fei.feiflix.Feiflix</exec.mainClass>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.4</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+    </dependencies>
+    
 </project>
