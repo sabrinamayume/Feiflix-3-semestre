@@ -18,8 +18,27 @@ public class Feiflix {
         JFrameLogin login = new JFrameLogin();
         login.setLocationRelativeTo(null);
         login.setVisible(true);
+      
     }
         
+        
+        
+//TESTE DE CRIAÇÃO DE LISTA DE FAVORITOS
+//        import br.edu.fei.model.dao.FavoritosDAO;
+//
+//        
+//        FavoritosDAO favoritosDAO = new FavoritosDAO();
+//
+//            boolean criou = favoritosDAO.criarLista(1, "Meus Favoritos");
+//
+//            if (criou) {
+//                System.out.println("Lista criada com sucesso!");
+//            } else {
+//                System.out.println("Erro ao criar lista.");
+//            }
+//    }
+     
+
 // TESTE DE LOGIN
 //import br.edu.fei.model.Usuarios;
 //import br.edu.fei.model.dao.UsuariosDAO;

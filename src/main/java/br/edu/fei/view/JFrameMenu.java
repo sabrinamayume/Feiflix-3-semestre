@@ -55,6 +55,7 @@ public class JFrameMenu extends javax.swing.JFrame {
         btnFavoritos.addActionListener(this::btnFavoritosActionPerformed);
 
         btnAvaliacoes.setText("Avaliações");
+        btnAvaliacoes.addActionListener(this::btnAvaliacoesActionPerformed);
 
         btnSair.setText("Sair");
         btnSair.addActionListener(this::btnSairActionPerformed);
@@ -123,6 +124,10 @@ public class JFrameMenu extends javax.swing.JFrame {
         System.out.println("Saindo do programa...");
         System.exit(0);
     }//GEN-LAST:event_btnSairActionPerformed
+
+    private void btnAvaliacoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvaliacoesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAvaliacoesActionPerformed
 //
 //    /**
 //     * @param args the command line arguments

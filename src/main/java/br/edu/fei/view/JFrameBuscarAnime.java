@@ -10,6 +10,7 @@ import br.edu.fei.model.dao.AnimesDAO;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import br.edu.fei.model.dao.AvaliacoesDAO;
 
 /**
  *
@@ -31,9 +32,10 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
     private void configurarTabela() {
         DefaultTableModel modelo = new DefaultTableModel();
 
+        modelo.addColumn("ID");
         modelo.addColumn("Título");
         modelo.addColumn("Descrição");
-        modelo.addColumn("Duração");
+        modelo.addColumn("Duração em minutos");
         modelo.addColumn("Gênero");
 
         tblAnimes.setModel(modelo);
@@ -50,15 +52,18 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
     private void initComponents() {
 
         txtBusca = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        pesquisar = new javax.swing.JLabel();
         btnBuscar = new javax.swing.JButton();
         btnVoltar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblAnimes = new javax.swing.JTable();
+        btnCurtir = new javax.swing.JButton();
+        btnDescurtir = new javax.swing.JButton();
+        FEIFLIX = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Pesquisar:");
+        pesquisar.setText("Pesquisar:");
 
         btnBuscar.setText("Buscar");
         btnBuscar.addActionListener(this::btnBuscarActionPerformed);
@@ -79,6 +84,19 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblAnimes);
 
+        btnCurtir.setText("Curtir");
+        btnCurtir.addActionListener(this::btnCurtirActionPerformed);
+
+        btnDescurtir.setText("descurtir");
+        btnDescurtir.addActionListener(this::btnDescurtirActionPerformed);
+
+        FEIFLIX.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        FEIFLIX.setForeground(new java.awt.Color(204, 0, 0));
+        FEIFLIX.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        FEIFLIX.setText("FEIFLIX");
+        FEIFLIX.setToolTipText("");
+        FEIFLIX.setPreferredSize(new java.awt.Dimension(100, 16));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -87,10 +105,15 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnCurtir)
+                        .addGap(33, 33, 33)
+                        .addComponent(btnDescurtir)
+                        .addGap(290, 290, 290)
+                        .addComponent(FEIFLIX, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnVoltar))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(pesquisar)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(txtBusca)
@@ -102,16 +125,25 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscar))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnVoltar)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pesquisar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBuscar))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnVoltar)
+                            .addComponent(btnCurtir)
+                            .addComponent(btnDescurtir))
+                        .addGap(0, 9, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(FEIFLIX, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         pack();
@@ -133,6 +165,7 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
 
         for (Animes anime : lista) {
             modelo.addRow(new Object[]{
+                anime.getIdAnimes(),
                 anime.getTitulo(),
                 anime.getDescricao(),
                 anime.getDuracao(),
@@ -152,6 +185,56 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
 
         this.dispose();
     }//GEN-LAST:event_btnVoltarActionPerformed
+
+    private void btnCurtirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCurtirActionPerformed
+        int linha = tblAnimes.getSelectedRow();
+
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um anime na tabela.");
+            return;
+        }
+
+        int idAnime = Integer.parseInt(tblAnimes.getValueAt(linha, 0).toString());
+
+        AvaliacoesDAO dao = new AvaliacoesDAO();
+
+        boolean sucesso = dao.avaliarAnime(
+                usuarioLogado.getIdUsuario(),
+                idAnime,
+                "CURTIDO"
+        );
+
+        if (sucesso) {
+            JOptionPane.showMessageDialog(this, "Anime curtido!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao curtir anime.");
+        }
+    }//GEN-LAST:event_btnCurtirActionPerformed
+
+    private void btnDescurtirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDescurtirActionPerformed
+        int linha = tblAnimes.getSelectedRow();
+
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um anime na tabela.");
+            return;
+        }
+
+        int idAnime = Integer.parseInt(tblAnimes.getValueAt(linha, 0).toString());
+
+        AvaliacoesDAO dao = new AvaliacoesDAO();
+
+        boolean sucesso = dao.avaliarAnime(
+                usuarioLogado.getIdUsuario(),
+                idAnime,
+                "DESCURTIDO"
+        );
+
+        if (sucesso) {
+            JOptionPane.showMessageDialog(this, "Anime descurtido!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao descurtir anime.");
+        }
+    }//GEN-LAST:event_btnDescurtirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -179,10 +262,13 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel FEIFLIX;
     private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnCurtir;
+    private javax.swing.JButton btnDescurtir;
     private javax.swing.JButton btnVoltar;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel pesquisar;
     private javax.swing.JTable tblAnimes;
     private javax.swing.JTextField txtBusca;
     // End of variables declaration//GEN-END:variables
