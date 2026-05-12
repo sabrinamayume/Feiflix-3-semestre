@@ -10,24 +10,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 /**
  *
  * @author sabri
  */
 public class FavoritosDAO {
 
-    public boolean criarLista(int idUsuario, String nomeLista) {
+    public boolean criarLista(int idUsuario) {
         String sql = """
-            INSERT INTO "ListasFavoritos" (nome, "idUsuario")
-            VALUES (?, ?)
+            INSERT INTO "ListasFavoritos" ("idUsuario")
+            VALUES (?)
         """;
 
         try (Connection conn = new Conexao().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, nomeLista);
-            stmt.setInt(2, idUsuario);
+            stmt.setInt(1, idUsuario);
 
             stmt.executeUpdate();
             return true;
@@ -63,56 +61,6 @@ public class FavoritosDAO {
         }
 
         return -1;
-    }
-
-    public String buscarNomeListaDoUsuario(int idUsuario) {
-        String sql = """
-            SELECT nome
-            FROM "ListasFavoritos"
-            WHERE "idUsuario" = ?
-        """;
-
-        try (Connection conn = new Conexao().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, idUsuario);
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getString("nome");
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Erro ao buscar nome da lista:");
-            System.out.println(e.getMessage());
-        }
-
-        return null;
-    }
-
-    public boolean editarNomeLista(int idUsuario, String novoNome) {
-        String sql = """
-            UPDATE "ListasFavoritos"
-            SET nome = ?
-            WHERE "idUsuario" = ?
-        """;
-
-        try (Connection conn = new Conexao().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, novoNome);
-            stmt.setInt(2, idUsuario);
-
-            int linhasAfetadas = stmt.executeUpdate();
-
-            return linhasAfetadas > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Erro ao editar nome da lista:");
-            System.out.println(e.getMessage());
-            return false;
-        }
     }
 
     public boolean excluirLista(int idUsuario) {

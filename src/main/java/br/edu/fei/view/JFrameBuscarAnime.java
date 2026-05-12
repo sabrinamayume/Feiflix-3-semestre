@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import br.edu.fei.model.dao.AvaliacoesDAO;
+import br.edu.fei.model.dao.FavoritosDAO;
 
 /**
  *
@@ -51,6 +52,8 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnAdicionarFavorito = new javax.swing.JButton();
+        btnAdicionarFavorito1 = new javax.swing.JButton();
         txtBusca = new javax.swing.JTextField();
         pesquisar = new javax.swing.JLabel();
         btnBuscar = new javax.swing.JButton();
@@ -60,6 +63,11 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
         btnCurtir = new javax.swing.JButton();
         btnDescurtir = new javax.swing.JButton();
         FEIFLIX = new javax.swing.JLabel();
+        btnAdicionarFavorito2 = new javax.swing.JButton();
+
+        btnAdicionarFavorito.setText("Adicionar anime");
+
+        btnAdicionarFavorito1.setText("Adicionar anime");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -97,6 +105,9 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
         FEIFLIX.setToolTipText("");
         FEIFLIX.setPreferredSize(new java.awt.Dimension(100, 16));
 
+        btnAdicionarFavorito2.setText("Adicionar anime");
+        btnAdicionarFavorito2.addActionListener(this::btnAdicionarFavorito2ActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,7 +119,9 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
                         .addComponent(btnCurtir)
                         .addGap(33, 33, 33)
                         .addComponent(btnDescurtir)
-                        .addGap(290, 290, 290)
+                        .addGap(34, 34, 34)
+                        .addComponent(btnAdicionarFavorito2)
+                        .addGap(139, 139, 139)
                         .addComponent(FEIFLIX, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnVoltar))
@@ -138,7 +151,8 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnVoltar)
                             .addComponent(btnCurtir)
-                            .addComponent(btnDescurtir))
+                            .addComponent(btnDescurtir)
+                            .addComponent(btnAdicionarFavorito2))
                         .addGap(0, 9, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -236,6 +250,37 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDescurtirActionPerformed
 
+    private void btnAdicionarFavorito2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarFavorito2ActionPerformed
+        int linha = tblAnimes.getSelectedRow();
+
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um anime na tabela.");
+            return;
+        }
+
+        FavoritosDAO dao = new FavoritosDAO();
+
+        int idLista = dao.buscarIdListaDoUsuario(usuarioLogado.getIdUsuario());
+
+        if (idLista == -1) {
+            JOptionPane.showMessageDialog(this, "Você ainda não criou uma lista de favoritos.");
+            return;
+        }
+
+        int linhaModelo = tblAnimes.convertRowIndexToModel(linha);
+        DefaultTableModel modelo = (DefaultTableModel) tblAnimes.getModel();
+
+        int idAnime = Integer.parseInt(modelo.getValueAt(linhaModelo, 0).toString());
+
+        boolean adicionou = dao.adicionarAnimeNaLista(usuarioLogado.getIdUsuario(), idAnime);
+
+        if (adicionou) {
+            JOptionPane.showMessageDialog(this, "Anime adicionado aos favoritos!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao adicionar anime. Talvez ele já esteja na lista.");
+        }
+    }//GEN-LAST:event_btnAdicionarFavorito2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -263,6 +308,9 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel FEIFLIX;
+    private javax.swing.JButton btnAdicionarFavorito;
+    private javax.swing.JButton btnAdicionarFavorito1;
+    private javax.swing.JButton btnAdicionarFavorito2;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCurtir;
     private javax.swing.JButton btnDescurtir;

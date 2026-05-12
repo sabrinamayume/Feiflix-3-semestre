@@ -4,6 +4,16 @@
  */
 package br.edu.fei.view;
 
+import br.edu.fei.model.Usuarios;
+import br.edu.fei.model.Animes;
+import br.edu.fei.model.dao.Conexao;
+import br.edu.fei.model.dao.FavoritosDAO;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author sabri
@@ -12,13 +22,80 @@ public class JFrameFavoritos extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameFavoritos.class.getName());
 
-    /**
-     * Creates new form JFrameFavoritos
-     */
-    public JFrameFavoritos() {
+    private Usuarios usuarioLogado;
+
+
+    public JFrameFavoritos(Usuarios usuarioLogado) {
         initComponents();
+        this.usuarioLogado = usuarioLogado;
+
+        configurarTabela();
+        carregarLista();
     }
 
+    private void configurarTabela() {
+        DefaultTableModel modelo = new DefaultTableModel();
+
+        modelo.addColumn("ID");
+        modelo.addColumn("Título");
+        modelo.addColumn("Descrição");
+        modelo.addColumn("Duração");
+        modelo.addColumn("Gênero");
+
+        tblFavoritos.setModel(modelo);
+    }
+
+    private void carregarLista() {
+        FavoritosDAO dao = new FavoritosDAO();
+
+        int idLista = dao.buscarIdListaDoUsuario(usuarioLogado.getIdUsuario());
+
+        if (idLista == -1) {
+            lblNomeLista.setText("Você ainda não criou uma lista de favoritos.");
+
+            DefaultTableModel modelo = (DefaultTableModel) tblFavoritos.getModel();
+            modelo.setRowCount(0);
+
+            return;
+        }
+
+        lblNomeLista.setText("Meus Favoritos");
+
+        ArrayList<Animes> favoritos = dao.listarAnimesFavoritos(usuarioLogado.getIdUsuario());
+
+        DefaultTableModel modelo = (DefaultTableModel) tblFavoritos.getModel();
+        modelo.setRowCount(0);
+
+        for (Animes anime : favoritos) {
+            modelo.addRow(new Object[]{
+                anime.getIdAnimes(),
+                anime.getTitulo(),
+                anime.getDescricao(),
+                anime.getDuracao(),
+                anime.getGenero()
+            });
+        }
+    }
+    public boolean criarLista(int idUsuario) {
+        String sql = """
+            INSERT INTO "ListasFavoritos" ("idUsuario")
+            VALUES (?)
+        """;
+
+        try (Connection conn = new Conexao().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idUsuario);
+            stmt.executeUpdate();
+
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao criar lista de favoritos:");
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,26 +105,18 @@ public class JFrameFavoritos extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblNomeLista = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblFavoritos = new javax.swing.JTable();
+        lblNomeLista = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         btnCriarLista = new javax.swing.JButton();
-        btnEditarLista = new javax.swing.JButton();
         btnExcluirLista = new javax.swing.JButton();
         btnExcluirAnime = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        lblNomeLista.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
-        lblNomeLista.setForeground(new java.awt.Color(204, 0, 0));
-        lblNomeLista.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblNomeLista.setText("nome da lista");
-        lblNomeLista.setToolTipText("");
-        lblNomeLista.setPreferredSize(new java.awt.Dimension(100, 16));
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblFavoritos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -58,7 +127,14 @@ public class JFrameFavoritos extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblFavoritos);
+
+        lblNomeLista.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
+        lblNomeLista.setForeground(new java.awt.Color(204, 0, 0));
+        lblNomeLista.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblNomeLista.setText("Favoritos");
+        lblNomeLista.setToolTipText("");
+        lblNomeLista.setPreferredSize(new java.awt.Dimension(100, 16));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(204, 0, 0));
@@ -68,15 +144,16 @@ public class JFrameFavoritos extends javax.swing.JFrame {
         jLabel3.setPreferredSize(new java.awt.Dimension(100, 16));
 
         btnCriarLista.setText("Criar Lista");
-
-        btnEditarLista.setText("Editar Lista");
+        btnCriarLista.addActionListener(this::btnCriarListaActionPerformed);
 
         btnExcluirLista.setText("Excluir Lista");
+        btnExcluirLista.addActionListener(this::btnExcluirListaActionPerformed);
 
         btnExcluirAnime.setText("Remover anime");
         btnExcluirAnime.addActionListener(this::btnExcluirAnimeActionPerformed);
 
         jButton5.setText("Voltar");
+        jButton5.addActionListener(this::jButton5ActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -89,24 +166,21 @@ public class JFrameFavoritos extends javax.swing.JFrame {
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblNomeLista, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 919, Short.MAX_VALUE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 919, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(79, 79, 79)
-                                        .addComponent(jButton5))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(btnExcluirLista, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnExcluirAnime, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnEditarLista, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnCriarLista, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(lblNomeLista, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(14, Short.MAX_VALUE))
+                                .addGap(79, 79, 79)
+                                .addComponent(jButton5)
+                                .addGap(3, 3, 3))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(btnExcluirLista, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                                    .addComponent(btnCriarLista, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                                    .addComponent(btnExcluirAnime, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE))))))
+                .addGap(14, 14, 14))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -117,11 +191,9 @@ public class JFrameFavoritos extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnCriarLista)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEditarLista)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnExcluirLista)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnExcluirAnime)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -135,43 +207,88 @@ public class JFrameFavoritos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnExcluirAnimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirAnimeActionPerformed
-        // TODO add your handling code here:
+        int linha = tblFavoritos.getSelectedRow();
+
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um anime para remover.");
+            return;
+        }
+
+        int linhaModelo = tblFavoritos.convertRowIndexToModel(linha);
+        DefaultTableModel modelo = (DefaultTableModel) tblFavoritos.getModel();
+
+        int idAnime = Integer.parseInt(modelo.getValueAt(linhaModelo, 0).toString());
+
+        FavoritosDAO dao = new FavoritosDAO();
+
+        boolean removeu = dao.removerAnimeDaLista(usuarioLogado.getIdUsuario(), idAnime);
+
+        if (removeu) {
+            JOptionPane.showMessageDialog(this, "Anime removido dos favoritos.");
+            carregarLista();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao remover anime.");
+        }
     }//GEN-LAST:event_btnExcluirAnimeActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btnExcluirListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirListaActionPerformed
+        FavoritosDAO dao = new FavoritosDAO();
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new JFrameFavoritos().setVisible(true));
-    }
+        int idLista = dao.buscarIdListaDoUsuario(usuarioLogado.getIdUsuario());
+
+        if (idLista == -1) {
+            JOptionPane.showMessageDialog(this, "Você ainda não tem uma lista para excluir.");
+            return;
+        }
+
+        int opcao = JOptionPane.showConfirmDialog(
+                this,
+                "Deseja realmente excluir sua lista de favoritos?",
+                "Confirmar exclusão",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (opcao == JOptionPane.YES_OPTION) {
+            boolean excluiu = dao.excluirLista(usuarioLogado.getIdUsuario());
+
+            if (excluiu) {
+                JOptionPane.showMessageDialog(this, "Lista excluída com sucesso!");
+                carregarLista();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao excluir lista.");
+            }
+        }
+    }//GEN-LAST:event_btnExcluirListaActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        JFrameMenu menu = new JFrameMenu(usuarioLogado);
+        menu.setLocationRelativeTo(null);
+        menu.setVisible(true);
+
+        this.dispose();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void btnCriarListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriarListaActionPerformed
+        FavoritosDAO dao = new FavoritosDAO();
+
+        boolean criou = dao.criarLista(usuarioLogado.getIdUsuario());
+
+        if (criou) {
+            JOptionPane.showMessageDialog(this, "Lista de favoritos criada com sucesso!");
+            carregarLista();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao criar lista. Talvez você já tenha uma lista.");
+        }
+    }//GEN-LAST:event_btnCriarListaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCriarLista;
-    private javax.swing.JButton btnEditarLista;
     private javax.swing.JButton btnExcluirAnime;
     private javax.swing.JButton btnExcluirLista;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblNomeLista;
+    private javax.swing.JTable tblFavoritos;
     // End of variables declaration//GEN-END:variables
 }

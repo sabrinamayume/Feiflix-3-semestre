@@ -7,6 +7,10 @@ package br.edu.fei.model.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import br.edu.fei.model.Animes;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
@@ -44,4 +48,46 @@ public class AvaliacoesDAO {
             return false;
         }
     }
+    
+    public ArrayList<Animes> listarPorTipo(int idUsuario, String tipo) {
+        ArrayList<Animes> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT a."idAnime", a.titulo, a.descricao, a.duracao, a.genero
+            FROM "Avaliacoes" av
+            JOIN "Animes" a ON av."idAnime" = a."idAnime"
+            WHERE av."idUsuario" = ?
+            AND av.tipo = ?
+            ORDER BY a.titulo
+        """;
+
+        try (Connection conn = new Conexao().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idUsuario);
+            stmt.setString(2, tipo);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Animes anime = new Animes();
+
+                anime.setIdAnimes(rs.getInt("idAnime"));
+                anime.setTitulo(rs.getString("titulo"));
+                anime.setDescricao(rs.getString("descricao"));
+                anime.setDuracao(rs.getInt("duracao"));
+                anime.setGenero(rs.getString("genero"));
+
+                lista.add(anime);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar avaliações:");
+            System.out.println(e.getMessage());
+        }
+
+        return lista;
+    }
+    
 }
+    

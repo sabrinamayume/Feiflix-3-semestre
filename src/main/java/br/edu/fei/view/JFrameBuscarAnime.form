@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.JButton" name="btnAdicionarFavorito">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Adicionar anime"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnAdicionarFavorito1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Adicionar anime"/>
+      </Properties>
+    </Component>
+  </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
   </Properties>
@@ -30,7 +42,9 @@
                       <Component id="btnCurtir" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
                       <Component id="btnDescurtir" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="290" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                      <Component id="btnAdicionarFavorito2" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="139" max="-2" attributes="0"/>
                       <Component id="FEIFLIX" min="-2" pref="161" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="btnVoltar" min="-2" max="-2" attributes="0"/>
@@ -68,6 +82,7 @@
                           <Component id="btnVoltar" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnCurtir" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnDescurtir" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnAdicionarFavorito2" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="9" max="32767" attributes="0"/>
                   </Group>
@@ -184,6 +199,14 @@
           <Dimension value="[100, 16]"/>
         </Property>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnAdicionarFavorito2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Adicionar anime"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAdicionarFavorito2ActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
