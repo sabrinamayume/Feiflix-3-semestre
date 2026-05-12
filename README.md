@@ -37,7 +37,7 @@ O projeto foi desenvolvido individualmente, tendo como objetivo apresentar uma p
 
 FLUXOGRAMA DO PROJETO:
 
-<img width="2022" height="608" alt="fluxogramaFeiflix drawio" src="https://github.com/user-attachments/assets/1d93d9f5-41ff-4d2a-9a0a-ba1ee54dbbc4" />
+<img width="1929" height="608" alt="fluxogramaFeiflix drawio" src="https://github.com/user-attachments/assets/a4b9090a-139b-499b-bc29-fe2c6a65f833" />
 
 
 DIAGRAMA DE CLASSES:
