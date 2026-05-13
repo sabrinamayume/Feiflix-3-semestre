@@ -4,9 +4,7 @@
  */
 package br.edu.fei.view;
 
-import br.edu.fei.model.Usuarios;
-import br.edu.fei.model.dao.UsuariosDAO;
-import javax.swing.JOptionPane;
+import br.edu.fei.controller.CadastroController;
 
 /**
  *
@@ -14,6 +12,7 @@ import javax.swing.JOptionPane;
  */
 public class JFrameCadastro extends javax.swing.JFrame {
     
+    private CadastroController cadastroController;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameCadastro.class.getName());
 
     /**
@@ -21,6 +20,7 @@ public class JFrameCadastro extends javax.swing.JFrame {
      */
     public JFrameCadastro() {
         initComponents();
+        this.cadastroController = new CadastroController();
     }
 
     /**
@@ -155,23 +155,17 @@ public class JFrameCadastro extends javax.swing.JFrame {
         String sexo = cbSexo.getSelectedItem().toString();
 
         if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || sexo.equals("Selecione")) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos.");
+            cadastroController.exibirMensagemCamposVazios(this);
             return;
         }
 
-        Usuarios usuario = new Usuarios(nome, email, senha, sexo);
-        UsuariosDAO dao = new UsuariosDAO();
-
-        boolean cadastrou = dao.cadastrar(usuario);
+        boolean cadastrou = cadastroController.cadastrarUsuario(nome, email, senha, sexo);
 
         if (cadastrou) {
-            JOptionPane.showMessageDialog(this, "Usuário cadastrado com sucesso!");
-
-            new JFrameLogin().setVisible(true);
-            this.dispose();
-
+            cadastroController.exibirMensagemCadastroSucesso(this);
+            cadastroController.abrirLogin(this);
         } else {
-            JOptionPane.showMessageDialog(this, "Erro ao cadastrar usuário. Verifique se o email já existe.");
+            cadastroController.exibirMensagemCadastroErro(this);
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
@@ -180,8 +174,7 @@ public class JFrameCadastro extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNomeActionPerformed
 
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
-    new JFrameLogin().setVisible(true);
-    this.dispose();
+        cadastroController.abrirLogin(this);
     }//GEN-LAST:event_btnVoltarActionPerformed
 
     private void cbSexoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSexoActionPerformed
@@ -212,7 +205,6 @@ public class JFrameCadastro extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new JFrameCadastro().setVisible(true));
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrar;
     private javax.swing.JButton btnVoltar;

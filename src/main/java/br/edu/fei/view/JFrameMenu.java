@@ -4,6 +4,7 @@
  */
 package br.edu.fei.view;
 
+import br.edu.fei.controller.MenuController;
 import br.edu.fei.model.Usuarios;
 
 /**
@@ -11,15 +12,16 @@ import br.edu.fei.model.Usuarios;
  * @author sabri
  */
 public class JFrameMenu extends javax.swing.JFrame {
-
     private Usuarios usuarioLogado;
+    private MenuController menuController;
 
     public JFrameMenu(Usuarios usuarioLogado) {
         initComponents();
 
         this.usuarioLogado = usuarioLogado;
+        this.menuController = new MenuController();
 
-        lblBemVindo.setText("Olá, " + usuarioLogado.getNome());
+        lblBemVindo.setText(menuController.gerarMensagemBoasVindas(usuarioLogado));
     }
 
 
@@ -110,33 +112,43 @@ public class JFrameMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarAnimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarAnimeActionPerformed
-    JFrameBuscarAnime tela = new JFrameBuscarAnime(usuarioLogado);
-    tela.setLocationRelativeTo(null);
-    tela.setVisible(true);
-    this.dispose();
+        menuController.abrirTelaBuscarAnime(this, usuarioLogado);
     }//GEN-LAST:event_btnBuscarAnimeActionPerformed
 
     private void btnFavoritosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFavoritosActionPerformed
-        JFrameFavoritos tela = new JFrameFavoritos(usuarioLogado);
-        tela.setLocationRelativeTo(null);
-        tela.setVisible(true);
-
-        this.dispose();
+        menuController.abrirTelaFavoritos(this, usuarioLogado);
     }//GEN-LAST:event_btnFavoritosActionPerformed
 
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
-        System.out.println("Saindo do programa...");
-        System.exit(0);
+        menuController.sairDoSistema();
     }//GEN-LAST:event_btnSairActionPerformed
 
     private void btnAvaliacoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvaliacoesActionPerformed
-        JFrameAvaliacoes tela = new JFrameAvaliacoes(usuarioLogado);
-        tela.setLocationRelativeTo(null);
-        tela.setVisible(true);
-
-        this.dispose();
+        menuController.abrirTelaAvaliacoes(this, usuarioLogado);
     }//GEN-LAST:event_btnAvaliacoesActionPerformed
 
+//        public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+//            logger.log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(() -> new JFrameMenu().setVisible(true));
+//    }
+        
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAvaliacoes;
     private javax.swing.JButton btnBuscarAnime;

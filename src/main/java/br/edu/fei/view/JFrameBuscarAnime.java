@@ -4,14 +4,8 @@
  */
 package br.edu.fei.view;
 
+import br.edu.fei.controller.BuscarAnimeController;
 import br.edu.fei.model.Usuarios;
-import br.edu.fei.model.Animes;
-import br.edu.fei.model.dao.AnimesDAO;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import br.edu.fei.model.dao.AvaliacoesDAO;
-import br.edu.fei.model.dao.FavoritosDAO;
 
 /**
  *
@@ -22,26 +16,13 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameBuscarAnime.class.getName());
 
     private Usuarios usuarioLogado;
+    private BuscarAnimeController buscarAnimeController;
 
     public JFrameBuscarAnime(Usuarios usuarioLogado) {
         initComponents();
         this.usuarioLogado = usuarioLogado;
-
-        configurarTabela();
+        this.buscarAnimeController = new BuscarAnimeController();
     }
-
-    private void configurarTabela() {
-        DefaultTableModel modelo = new DefaultTableModel();
-
-        modelo.addColumn("ID");
-        modelo.addColumn("Título");
-        modelo.addColumn("Descrição");
-        modelo.addColumn("Duração em minutos");
-        modelo.addColumn("Gênero");
-
-        tblAnimes.setModel(modelo);
-    }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -81,15 +62,23 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
 
         tblAnimes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Título", "Descrição", "Duração em minutos", "Gênero"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblAnimes);
 
         btnCurtir.setText("Curtir");
@@ -164,121 +153,23 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        String nomeBusca = txtBusca.getText();
-
-        if (nomeBusca.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Digite o nome do anime.");
-            return;
-        }
-
-        AnimesDAO dao = new AnimesDAO();
-        ArrayList<Animes> lista = dao.buscarPorNome(nomeBusca);
-
-        DefaultTableModel modelo = (DefaultTableModel) tblAnimes.getModel();
-        modelo.setRowCount(0);
-
-        for (Animes anime : lista) {
-            modelo.addRow(new Object[]{
-                anime.getIdAnimes(),
-                anime.getTitulo(),
-                anime.getDescricao(),
-                anime.getDuracao(),
-                anime.getGenero()
-            });
-        }
-
-        if (lista.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nenhum anime encontrado.");
-        }
+        buscarAnimeController.buscarAnime(txtBusca, tblAnimes, this);
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
-        JFrameMenu menu = new JFrameMenu(usuarioLogado);
-        menu.setLocationRelativeTo(null);
-        menu.setVisible(true);
-
-        this.dispose();
+        buscarAnimeController.voltarParaMenu(this, usuarioLogado);
     }//GEN-LAST:event_btnVoltarActionPerformed
 
     private void btnCurtirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCurtirActionPerformed
-        int linha = tblAnimes.getSelectedRow();
-
-        if (linha == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um anime na tabela.");
-            return;
-        }
-
-        int idAnime = Integer.parseInt(tblAnimes.getValueAt(linha, 0).toString());
-
-        AvaliacoesDAO dao = new AvaliacoesDAO();
-
-        boolean sucesso = dao.avaliarAnime(
-                usuarioLogado.getIdUsuario(),
-                idAnime,
-                "CURTIDO"
-        );
-
-        if (sucesso) {
-            JOptionPane.showMessageDialog(this, "Anime curtido!");
-        } else {
-            JOptionPane.showMessageDialog(this, "Erro ao curtir anime.");
-        }
+        buscarAnimeController.curtirAnime(usuarioLogado, tblAnimes, this);
     }//GEN-LAST:event_btnCurtirActionPerformed
 
     private void btnDescurtirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDescurtirActionPerformed
-        int linha = tblAnimes.getSelectedRow();
-
-        if (linha == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um anime na tabela.");
-            return;
-        }
-
-        int idAnime = Integer.parseInt(tblAnimes.getValueAt(linha, 0).toString());
-
-        AvaliacoesDAO dao = new AvaliacoesDAO();
-
-        boolean sucesso = dao.avaliarAnime(
-                usuarioLogado.getIdUsuario(),
-                idAnime,
-                "DESCURTIDO"
-        );
-
-        if (sucesso) {
-            JOptionPane.showMessageDialog(this, "Anime descurtido!");
-        } else {
-            JOptionPane.showMessageDialog(this, "Erro ao descurtir anime.");
-        }
+        buscarAnimeController.descurtirAnime(usuarioLogado, tblAnimes, this);
     }//GEN-LAST:event_btnDescurtirActionPerformed
 
     private void btnAdicionarFavorito2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarFavorito2ActionPerformed
-        int linha = tblAnimes.getSelectedRow();
-
-        if (linha == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um anime na tabela.");
-            return;
-        }
-
-        FavoritosDAO dao = new FavoritosDAO();
-
-        int idLista = dao.buscarIdListaDoUsuario(usuarioLogado.getIdUsuario());
-
-        if (idLista == -1) {
-            JOptionPane.showMessageDialog(this, "Você ainda não criou uma lista de favoritos.");
-            return;
-        }
-
-        int linhaModelo = tblAnimes.convertRowIndexToModel(linha);
-        DefaultTableModel modelo = (DefaultTableModel) tblAnimes.getModel();
-
-        int idAnime = Integer.parseInt(modelo.getValueAt(linhaModelo, 0).toString());
-
-        boolean adicionou = dao.adicionarAnimeNaLista(usuarioLogado.getIdUsuario(), idAnime);
-
-        if (adicionou) {
-            JOptionPane.showMessageDialog(this, "Anime adicionado aos favoritos!");
-        } else {
-            JOptionPane.showMessageDialog(this, "Erro ao adicionar anime. Talvez ele já esteja na lista.");
-        }
+        buscarAnimeController.adicionarAosFavoritos(usuarioLogado, tblAnimes, this);
     }//GEN-LAST:event_btnAdicionarFavorito2ActionPerformed
 
     /**
@@ -305,7 +196,6 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
 //        /* Create and display the form */
 //        java.awt.EventQueue.invokeLater(() -> new JFrameBuscarAnime().setVisible(true));
 //    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel FEIFLIX;
     private javax.swing.JButton btnAdicionarFavorito;
@@ -320,5 +210,4 @@ public class JFrameBuscarAnime extends javax.swing.JFrame {
     private javax.swing.JTable tblAnimes;
     private javax.swing.JTextField txtBusca;
     // End of variables declaration//GEN-END:variables
-
 }

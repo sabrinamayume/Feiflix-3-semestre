@@ -4,56 +4,24 @@
  */
 package br.edu.fei.view;
 
+import br.edu.fei.controller.AvaliacoesController;
 import br.edu.fei.model.Usuarios;
-import br.edu.fei.model.Animes;
-import br.edu.fei.model.dao.AvaliacoesDAO;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author sabri
  */
 public class JFrameAvaliacoes extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameAvaliacoes.class.getName());
-    
     private Usuarios usuarioLogado;
+    private AvaliacoesController avaliacoesController;
 
-
-    /**
-     * Creates new form JFrameAvaliacoes
-     */
-    public JFrameAvaliacoes() {
-        initComponents();
-    }
-    
     public JFrameAvaliacoes(Usuarios usuarioLogado) {
         initComponents();
+
         this.usuarioLogado = usuarioLogado;
-
-        configurarComboBox();
-        configurarTabela();
+        this.avaliacoesController = new AvaliacoesController();
     }
 
-    private void configurarComboBox() {
-        cbTipoAvaliacao.removeAllItems();
-        cbTipoAvaliacao.addItem("CURTIDO");
-        cbTipoAvaliacao.addItem("DESCURTIDO");
-    }
-
-    private void configurarTabela() {
-        DefaultTableModel modelo = new DefaultTableModel();
-
-        modelo.addColumn("ID");
-        modelo.addColumn("Título");
-        modelo.addColumn("Descrição");
-        modelo.addColumn("Duração");
-        modelo.addColumn("Gênero");
-
-        tblAvaliacoes.setModel(modelo);
-    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -75,15 +43,23 @@ public class JFrameAvaliacoes extends javax.swing.JFrame {
 
         tblAvaliacoes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Título", "Descrição", "Duração em minutos", "Gênero"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblAvaliacoes);
 
         btnVoltar.setText("Voltar");
@@ -92,7 +68,8 @@ public class JFrameAvaliacoes extends javax.swing.JFrame {
         btnBuscar.setText("Buscar");
         btnBuscar.addActionListener(this::btnBuscarActionPerformed);
 
-        cbTipoAvaliacao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbTipoAvaliacao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CURTIDO", "DESCURTIDO" }));
+        cbTipoAvaliacao.addActionListener(this::cbTipoAvaliacaoActionPerformed);
 
         FEIFLIX.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         FEIFLIX.setForeground(new java.awt.Color(204, 0, 0));
@@ -113,22 +90,22 @@ public class JFrameAvaliacoes extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(FEIFLIX1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(301, 301, 301)
-                        .addComponent(btnVoltar))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 981, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(cbTipoAvaliacao, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(btnBuscar))))
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(FEIFLIX1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(301, 301, 301)
+                                .addComponent(btnVoltar))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 981, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(cbTipoAvaliacao, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(btnBuscar)))))
+                    .addComponent(FEIFLIX, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(FEIFLIX, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -152,40 +129,16 @@ public class JFrameAvaliacoes extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        String tipo = cbTipoAvaliacao.getSelectedItem().toString();
-
-        AvaliacoesDAO dao = new AvaliacoesDAO();
-
-        ArrayList<Animes> lista = dao.listarPorTipo(
-                usuarioLogado.getIdUsuario(),
-                tipo
-        );
-
-        DefaultTableModel modelo = (DefaultTableModel) tblAvaliacoes.getModel();
-        modelo.setRowCount(0);
-
-        for (Animes anime : lista) {
-            modelo.addRow(new Object[]{
-                anime.getIdAnimes(),
-                anime.getTitulo(),
-                anime.getDescricao(),
-                anime.getDuracao(),
-                anime.getGenero()
-            });
-        }
-
-        if (lista.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nenhuma avaliação encontrada.");
-        }
+        avaliacoesController.buscarAvaliacoes(usuarioLogado,cbTipoAvaliacao,tblAvaliacoes,this);
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
-        JFrameMenu menu = new JFrameMenu(usuarioLogado);
-        menu.setLocationRelativeTo(null);
-        menu.setVisible(true);
-
-        this.dispose();
+        avaliacoesController.voltarParaMenu(this, usuarioLogado);
     }//GEN-LAST:event_btnVoltarActionPerformed
+
+    private void cbTipoAvaliacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTipoAvaliacaoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbTipoAvaliacaoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -211,7 +164,6 @@ public class JFrameAvaliacoes extends javax.swing.JFrame {
 //        /* Create and display the form */
 //        java.awt.EventQueue.invokeLater(() -> new JFrameAvaliacoes().setVisible(true));
 //    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel FEIFLIX;
     private javax.swing.JLabel FEIFLIX1;

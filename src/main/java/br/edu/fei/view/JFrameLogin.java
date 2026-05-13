@@ -4,10 +4,8 @@
  */
 package br.edu.fei.view;
 
+import br.edu.fei.controller.LoginController;
 import br.edu.fei.model.Usuarios;
-import br.edu.fei.model.dao.UsuariosDAO;
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author sabri
@@ -15,12 +13,13 @@ import javax.swing.JOptionPane;
 public class JFrameLogin extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameLogin.class.getName());
-
+    private LoginController loginController;
     /**
      * Creates new form JFrameLogin
      */
     public JFrameLogin() {
         initComponents();
+        this.loginController = new LoginController();
     }
 
     /**
@@ -92,15 +91,16 @@ public class JFrameLogin extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtSenha)
                     .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE))
-                .addContainerGap(93, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(115, 115, 115))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnEntrar)
-                .addGap(161, 161, 161))
+                .addContainerGap(122, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(115, 115, 115))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnEntrar)
+                        .addGap(161, 161, 161))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,30 +132,22 @@ public class JFrameLogin extends javax.swing.JFrame {
         String senha = new String(txtSenha.getPassword());
 
         if (email.isEmpty() || senha.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Preencha email e senha.");
+            loginController.exibirMensagemCamposVazios(this);
             return;
         }
 
-        UsuariosDAO dao = new UsuariosDAO();
-        Usuarios usuarioLogado = dao.login(email, senha);
+        Usuarios usuarioLogado = loginController.autenticar(email, senha);
 
         if (usuarioLogado != null) {
-            JOptionPane.showMessageDialog(this, "Bem-vindo(a), " + usuarioLogado.getNome());
-
-            JFrameMenu menu = new JFrameMenu(usuarioLogado);
-            menu.setLocationRelativeTo(null);
-            menu.setVisible(true);
-
-            this.dispose();
-
+            loginController.exibirMensagemBoasVindas(this, usuarioLogado);
+            loginController.abrirMenu(this, usuarioLogado);
         } else {
-            JOptionPane.showMessageDialog(this, "Email ou senha inválidos.");
+            loginController.exibirMensagemLoginInvalido(this);
         }
     }//GEN-LAST:event_btnEntrarActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        new JFrameCadastro().setVisible(true);
-        this.dispose();
+        loginController.abrirCadastro(this);
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void txtSenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSenhaActionPerformed
@@ -190,7 +182,6 @@ public class JFrameLogin extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new JFrameLogin().setVisible(true));
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton btnCadastrar;
     private javax.swing.JButton btnEntrar;

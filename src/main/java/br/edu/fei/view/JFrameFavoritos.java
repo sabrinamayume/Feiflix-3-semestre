@@ -4,16 +4,8 @@
  */
 package br.edu.fei.view;
 
+import br.edu.fei.controller.FavoritosController;
 import br.edu.fei.model.Usuarios;
-import br.edu.fei.model.Animes;
-import br.edu.fei.model.dao.Conexao;
-import br.edu.fei.model.dao.FavoritosDAO;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author sabri
@@ -21,80 +13,18 @@ import javax.swing.table.DefaultTableModel;
 public class JFrameFavoritos extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFrameFavoritos.class.getName());
-
+    
     private Usuarios usuarioLogado;
-
+    private FavoritosController favoritosController;
 
     public JFrameFavoritos(Usuarios usuarioLogado) {
         initComponents();
+
         this.usuarioLogado = usuarioLogado;
+        this.favoritosController = new FavoritosController();
 
-        configurarTabela();
-        carregarLista();
-    }
-
-    private void configurarTabela() {
-        DefaultTableModel modelo = new DefaultTableModel();
-
-        modelo.addColumn("ID");
-        modelo.addColumn("Título");
-        modelo.addColumn("Descrição");
-        modelo.addColumn("Duração");
-        modelo.addColumn("Gênero");
-
-        tblFavoritos.setModel(modelo);
-    }
-
-    private void carregarLista() {
-        FavoritosDAO dao = new FavoritosDAO();
-
-        int idLista = dao.buscarIdListaDoUsuario(usuarioLogado.getIdUsuario());
-
-        if (idLista == -1) {
-            lblNomeLista.setText("Você ainda não criou uma lista de favoritos.");
-
-            DefaultTableModel modelo = (DefaultTableModel) tblFavoritos.getModel();
-            modelo.setRowCount(0);
-
-            return;
-        }
-
-        lblNomeLista.setText("Meus Favoritos");
-
-        ArrayList<Animes> favoritos = dao.listarAnimesFavoritos(usuarioLogado.getIdUsuario());
-
-        DefaultTableModel modelo = (DefaultTableModel) tblFavoritos.getModel();
-        modelo.setRowCount(0);
-
-        for (Animes anime : favoritos) {
-            modelo.addRow(new Object[]{
-                anime.getIdAnimes(),
-                anime.getTitulo(),
-                anime.getDescricao(),
-                anime.getDuracao(),
-                anime.getGenero()
-            });
-        }
-    }
-    public boolean criarLista(int idUsuario) {
-        String sql = """
-            INSERT INTO "ListasFavoritos" ("idUsuario")
-            VALUES (?)
-        """;
-
-        try (Connection conn = new Conexao().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, idUsuario);
-            stmt.executeUpdate();
-
-            return true;
-
-        } catch (SQLException e) {
-            System.out.println("Erro ao criar lista de favoritos:");
-            System.out.println(e.getMessage());
-            return false;
-        }
+        favoritosController.configurarTabela(tblFavoritos);
+        favoritosController.carregarLista(usuarioLogado, lblNomeLista, tblFavoritos);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -112,21 +42,29 @@ public class JFrameFavoritos extends javax.swing.JFrame {
         btnCriarLista = new javax.swing.JButton();
         btnExcluirLista = new javax.swing.JButton();
         btnExcluirAnime = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btnVoltar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         tblFavoritos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Título", "Descrição", "Duração", "Gênero"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblFavoritos);
 
         lblNomeLista.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
@@ -152,8 +90,8 @@ public class JFrameFavoritos extends javax.swing.JFrame {
         btnExcluirAnime.setText("Remover anime");
         btnExcluirAnime.addActionListener(this::btnExcluirAnimeActionPerformed);
 
-        jButton5.setText("Voltar");
-        jButton5.addActionListener(this::jButton5ActionPerformed);
+        btnVoltar.setText("Voltar");
+        btnVoltar.addActionListener(this::btnVoltarActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -172,7 +110,7 @@ public class JFrameFavoritos extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(79, 79, 79)
-                                .addComponent(jButton5)
+                                .addComponent(btnVoltar)
                                 .addGap(3, 3, 3))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -199,7 +137,7 @@ public class JFrameFavoritos extends javax.swing.JFrame {
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton5)
+                .addComponent(btnVoltar)
                 .addContainerGap())
         );
 
@@ -207,85 +145,26 @@ public class JFrameFavoritos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnExcluirAnimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirAnimeActionPerformed
-        int linha = tblFavoritos.getSelectedRow();
-
-        if (linha == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um anime para remover.");
-            return;
-        }
-
-        int linhaModelo = tblFavoritos.convertRowIndexToModel(linha);
-        DefaultTableModel modelo = (DefaultTableModel) tblFavoritos.getModel();
-
-        int idAnime = Integer.parseInt(modelo.getValueAt(linhaModelo, 0).toString());
-
-        FavoritosDAO dao = new FavoritosDAO();
-
-        boolean removeu = dao.removerAnimeDaLista(usuarioLogado.getIdUsuario(), idAnime);
-
-        if (removeu) {
-            JOptionPane.showMessageDialog(this, "Anime removido dos favoritos.");
-            carregarLista();
-        } else {
-            JOptionPane.showMessageDialog(this, "Erro ao remover anime.");
-        }
+        favoritosController.removerAnime(usuarioLogado, tblFavoritos, lblNomeLista, this);
     }//GEN-LAST:event_btnExcluirAnimeActionPerformed
 
     private void btnExcluirListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirListaActionPerformed
-        FavoritosDAO dao = new FavoritosDAO();
-
-        int idLista = dao.buscarIdListaDoUsuario(usuarioLogado.getIdUsuario());
-
-        if (idLista == -1) {
-            JOptionPane.showMessageDialog(this, "Você ainda não tem uma lista para excluir.");
-            return;
-        }
-
-        int opcao = JOptionPane.showConfirmDialog(
-                this,
-                "Deseja realmente excluir sua lista de favoritos?",
-                "Confirmar exclusão",
-                JOptionPane.YES_NO_OPTION
-        );
-
-        if (opcao == JOptionPane.YES_OPTION) {
-            boolean excluiu = dao.excluirLista(usuarioLogado.getIdUsuario());
-
-            if (excluiu) {
-                JOptionPane.showMessageDialog(this, "Lista excluída com sucesso!");
-                carregarLista();
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao excluir lista.");
-            }
-        }
+        favoritosController.excluirLista(usuarioLogado, lblNomeLista, tblFavoritos, this);
     }//GEN-LAST:event_btnExcluirListaActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        JFrameMenu menu = new JFrameMenu(usuarioLogado);
-        menu.setLocationRelativeTo(null);
-        menu.setVisible(true);
-
-        this.dispose();
-    }//GEN-LAST:event_jButton5ActionPerformed
+    private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
+        favoritosController.voltarParaMenu(this, usuarioLogado);
+    }//GEN-LAST:event_btnVoltarActionPerformed
 
     private void btnCriarListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriarListaActionPerformed
-        FavoritosDAO dao = new FavoritosDAO();
-
-        boolean criou = dao.criarLista(usuarioLogado.getIdUsuario());
-
-        if (criou) {
-            JOptionPane.showMessageDialog(this, "Lista de favoritos criada com sucesso!");
-            carregarLista();
-        } else {
-            JOptionPane.showMessageDialog(this, "Erro ao criar lista. Talvez você já tenha uma lista.");
-        }
+        favoritosController.criarLista(usuarioLogado, lblNomeLista, tblFavoritos, this);
     }//GEN-LAST:event_btnCriarListaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCriarLista;
     private javax.swing.JButton btnExcluirAnime;
     private javax.swing.JButton btnExcluirLista;
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton btnVoltar;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblNomeLista;
