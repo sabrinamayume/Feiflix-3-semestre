@@ -192,6 +192,3 @@ Animes favoritos
 <img width="1929" height="608" alt="fluxogramaFeiflix drawio" src="https://github.com/user-attachments/assets/a4b9090a-139b-499b-bc29-fe2c6a65f833" />
 
 
-## DIAGRAMA DE CLASSES:
-<img width="1028" height="626" alt="WhatsApp Image 2026-05-09 at 19 12 31" src="https://github.com/user-attachments/assets/ef459cf7-ef8b-45e4-9f2c-5bdb4f3bcd41" />
-
