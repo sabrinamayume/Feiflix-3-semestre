@@ -191,4 +191,5 @@ Animes favoritos
 ## FLUXOGRAMA DO PROJETO:
 <img width="1929" height="608" alt="fluxogramaFeiflix drawio" src="https://github.com/user-attachments/assets/a4b9090a-139b-499b-bc29-fe2c6a65f833" />
 
-
+# LINK DO VIDEO DO SISTEMA RODANDO:
+https://youtu.be/BcNQUkH57gE
