@@ -14,10 +14,10 @@ import br.edu.fei.view.JFrameLogin;
 public class Feiflix {
 
     public static void main(String[] args) {
-        System.out.println("Abrindo programa...");
-        JFrameLogin login = new JFrameLogin();
-        login.setLocationRelativeTo(null);
-        login.setVisible(true);
+        System.out.println("Abrindo programa..."); 
+        JFrameLogin login = new JFrameLogin(); //chama a tela de login
+        login.setLocationRelativeTo(null); // centraliza a janela na tela
+        login.setVisible(true); // mostra a janela
       
     }
         

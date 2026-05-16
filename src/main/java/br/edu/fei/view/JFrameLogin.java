@@ -5,7 +5,6 @@
 package br.edu.fei.view;
 
 import br.edu.fei.controller.LoginController;
-import br.edu.fei.model.Usuarios;
 /**
  *
  * @author sabri
@@ -125,22 +124,7 @@ public class JFrameLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
-        String email = txtEmail.getText();
-        String senha = new String(txtSenha.getPassword());
-
-        if (email.isEmpty() || senha.isEmpty()) {
-            loginController.exibirMensagemCamposVazios(this);
-            return;
-        }
-
-        Usuarios usuarioLogado = loginController.autenticar(email, senha);
-
-        if (usuarioLogado != null) {
-            loginController.exibirMensagemBoasVindas(this, usuarioLogado);
-            loginController.abrirMenu(this, usuarioLogado);
-        } else {
-            loginController.exibirMensagemLoginInvalido(this);
-        }
+        loginController.entrar(this, txtEmail, txtSenha);
     }//GEN-LAST:event_btnEntrarActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed

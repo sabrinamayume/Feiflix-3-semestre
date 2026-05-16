@@ -10,6 +10,8 @@ import br.edu.fei.view.JFrameMenu;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import br.edu.fei.view.JFrameCadastro;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 /**
  *
@@ -62,4 +64,28 @@ public class LoginController {
 
         telaAtual.dispose();
     }
+    public void entrar(JFrame telaAtual, JTextField txtEmail, JPasswordField txtSenha) {
+        String email = txtEmail.getText();
+        String senha = new String(txtSenha.getPassword());
+
+        if (email.trim().isEmpty() || senha.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(telaAtual, "Preencha email e senha.");
+            return;
+        }
+
+        Usuarios usuarioLogado = usuariosDAO.login(email, senha);
+
+        if (usuarioLogado != null) {
+            JOptionPane.showMessageDialog(telaAtual, "Bem-vindo(a), " + usuarioLogado.getNome());
+
+            JFrameMenu menu = new JFrameMenu(usuarioLogado);
+            menu.setLocationRelativeTo(null);
+            menu.setVisible(true);
+
+            telaAtual.dispose();
+        } else {
+            JOptionPane.showMessageDialog(telaAtual, "Email ou senha inválidos.");
+        }
+    }
+    
 }

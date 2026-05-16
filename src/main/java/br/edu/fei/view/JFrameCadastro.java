@@ -149,24 +149,8 @@ public class JFrameCadastro extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        String nome = txtNome.getText();
-        String email = txtEmail.getText();
-        String senha = new String(txtSenha.getPassword());
-        String sexo = cbSexo.getSelectedItem().toString();
+    cadastroController.cadastrar(this, txtNome, txtEmail, txtSenha, cbSexo);
 
-        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || sexo.equals("Selecione")) {
-            cadastroController.exibirMensagemCamposVazios(this);
-            return;
-        }
-
-        boolean cadastrou = cadastroController.cadastrarUsuario(nome, email, senha, sexo);
-
-        if (cadastrou) {
-            cadastroController.exibirMensagemCadastroSucesso(this);
-            cadastroController.abrirLogin(this);
-        } else {
-            cadastroController.exibirMensagemCadastroErro(this);
-        }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void txtNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeActionPerformed

@@ -27,7 +27,7 @@ public class UsuariosDAO {
             stmt.setString(3, usuario.getSenha());
             stmt.setString(4, usuario.getSexo());
 
-            stmt.executeUpdate();
+            stmt.executeUpdate(); //comandos que alteram o banco
 
             System.out.println("Usuário cadastrado com sucesso!");
             return true;
