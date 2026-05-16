@@ -108,7 +108,7 @@ Favoritos:
 Login: 
 
 	private void btnEntrarActionPerformed \\ verifica o login e vai para a tela menu
-    private void btnCadastrarActionPerformed \\ vai paa a a tela de cadastro
+    private void btnCadastrarActionPerformed \\ vai para a tela de cadastro
 Menu:
 
     private void btnBuscarAnimeActionPerformed \\ vai para a atela de buscar anime
